@@ -46,6 +46,19 @@ export default function ClientWrapped() {
       ? Math.min(100, Math.round((data.total_asistencias / data.max_asistencias) * 100))
       : 0;
 
+  // Métricas para equivalencias y anillos
+  const kmEstimados = data ? data.total_asistencias * 5 : 0; // 5 km por clase (hipotético)
+  const maratones = data ? (kmEstimados / 42.195).toFixed(1) : '0.0';
+
+  const horasEntrenadas = data ? (data.total_asistencias * 0.75).toFixed(1) : '0.0'; // 45 min por clase
+  const everests = data ? ((data.total_asistencias * 85) / 8848).toFixed(2) : '0.00'; // 500 escalones ~ 85m por clase
+
+  const objetivoSemanal = 4;
+  const porcentajeConstancia = data
+    ? Math.min(100, Math.round((data.promedio_semanal / objetivoSemanal) * 100))
+    : 0;
+  const ringCommunity = data ? Math.min(100, data.percentile) : 0;
+
   return (
     <>
       <style jsx global>{`
@@ -135,7 +148,7 @@ export default function ClientWrapped() {
       `}</style>
 
       <div style={styles.page}>
-        {/* CAPA DE FONDO ANIMADA */}
+        {/* FONDO ANIMADO */}
         <div style={styles.animatedBgLayer} />
         <div style={styles.animatedBgNoise} />
 
@@ -227,6 +240,77 @@ export default function ClientWrapped() {
                 </div>
               </div>
 
+              {/* ANILLOS TIPO APPLE WATCH */}
+              <div style={styles.ringsCard}>
+                <p style={styles.ringsTitle}>Tus anillos de movimiento</p>
+                <p style={styles.ringsSubtitle}>
+                  Si tu año en Caamp fuera un Apple Watch, así se verían tus anillos:
+                </p>
+
+                <div style={styles.ringsWrapper}>
+                  <div style={styles.ringsGraphic}>
+                    {/* Anillo externo – movimiento total */}
+                    <div
+                      style={{
+                        ...styles.ringBase,
+                        ...styles.ringOuter,
+                        backgroundImage: `conic-gradient(#22c55e ${progress}%, rgba(31,41,55,0.5) ${progress}% 100%)`
+                      }}
+                    />
+                    {/* Anillo medio – comunidad */}
+                    <div
+                      style={{
+                        ...styles.ringBase,
+                        ...styles.ringMiddle,
+                        backgroundImage: `conic-gradient(#06b6d4 ${ringCommunity}%, rgba(15,23,42,0.7) ${ringCommunity}% 100%)`
+                      }}
+                    />
+                    {/* Anillo interno – constancia semanal */}
+                    <div
+                      style={{
+                        ...styles.ringBase,
+                        ...styles.ringInner,
+                        backgroundImage: `conic-gradient(#eab308 ${porcentajeConstancia}%, rgba(15,23,42,0.7) ${porcentajeConstancia}% 100%)`
+                      }}
+                    />
+                    <div style={styles.ringsCenterText}>
+                      <span style={styles.ringsCenterNumber}>{data.total_asistencias}</span>
+                      <span style={styles.ringsCenterLabel}>clases</span>
+                    </div>
+                  </div>
+
+                  <div style={styles.ringsLegend}>
+                    <div style={styles.ringsLegendItem}>
+                      <span style={{ ...styles.ringsDot, backgroundColor: '#22c55e' }} />
+                      <div>
+                        <p style={styles.ringsLegendLabel}>Movimiento total</p>
+                        <p style={styles.ringsLegendValue}>
+                          {progress}% del máximo de entrenamientos del estudio.
+                        </p>
+                      </div>
+                    </div>
+                    <div style={styles.ringsLegendItem}>
+                      <span style={{ ...styles.ringsDot, backgroundColor: '#06b6d4' }} />
+                      <div>
+                        <p style={styles.ringsLegendLabel}>Tu lugar en la comunidad</p>
+                        <p style={styles.ringsLegendValue}>
+                          Top {data.percentile}% de Caamp este año.
+                        </p>
+                      </div>
+                    </div>
+                    <div style={styles.ringsLegendItem}>
+                      <span style={{ ...styles.ringsDot, backgroundColor: '#eab308' }} />
+                      <div>
+                        <p style={styles.ringsLegendLabel}>Constancia semanal</p>
+                        <p style={styles.ringsLegendValue}>
+                          {porcentajeConstancia}% de un objetivo de 4 clases por semana.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Fila principal */}
               <div style={styles.mainGrid}>
                 {/* Total asistencias */}
@@ -285,6 +369,25 @@ export default function ClientWrapped() {
                     de lo que entraste.
                   </p>
                 </div>
+              </div>
+
+              {/* Equivalencias tipo maratón / Everest */}
+              <div style={styles.equivalenceCard}>
+                <p style={styles.equivalenceTitle}>Si lo ponemos en perspectiva…</p>
+                <p style={styles.equivalenceText}>
+                  Si cada clase fuera una carrera de <strong>5 km</strong>, este año habrías corrido
+                  alrededor de <strong>{kmEstimados.toFixed(0)} km</strong>, que son unos{' '}
+                  <strong>{maratones}</strong> maratones completos. 🏃‍♂️
+                </p>
+                <p style={styles.equivalenceText}>
+                  Y si cada clase fueran <strong>500 escalones</strong>, habrías subido el
+                  equivalente a escalar el Everest aproximadamente{' '}
+                  <strong>{everests}</strong> veces. 🏔️
+                </p>
+                <p style={styles.equivalenceNote}>
+                  (Son equivalencias aproximadas, pero te dan una idea de lo grande que fue todo lo
+                  que entrenaste.)
+                </p>
               </div>
 
               {/* Mensaje final */}
@@ -365,8 +468,7 @@ const styles = {
   animatedBgLayer: {
     position: 'fixed',
     inset: 0,
-    background:
-      'linear-gradient(130deg,#020617,#020617,#020617)',
+    background: 'linear-gradient(130deg,#020617,#020617,#020617)',
     zIndex: 0
   },
   animatedBgNoise: {
@@ -569,6 +671,113 @@ const styles = {
     color: '#e5e7eb'
   },
 
+  // ANILLOS
+  ringsCard: {
+    borderRadius: 18,
+    padding: 14,
+    background: 'rgba(15,23,42,0.98)',
+    border: '1px solid rgba(148,163,184,0.5)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 10
+  },
+  ringsTitle: {
+    margin: 0,
+    fontSize: 13,
+    fontWeight: 600,
+    color: '#f9fafb'
+  },
+  ringsSubtitle: {
+    margin: 0,
+    fontSize: 12,
+    color: '#e5e7eb'
+  },
+  ringsWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 16,
+    marginTop: 6,
+    alignItems: 'center'
+  },
+  ringsGraphic: {
+    position: 'relative',
+    width: 140,
+    height: 140,
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0
+  },
+  ringBase: {
+    position: 'absolute',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(15,23,42,1)'
+  },
+  ringOuter: {
+    inset: 0,
+    padding: 6,
+    backgroundClip: 'padding-box'
+  },
+  ringMiddle: {
+    inset: 15,
+    padding: 6,
+    backgroundClip: 'padding-box'
+  },
+  ringInner: {
+    inset: 30,
+    padding: 6,
+    backgroundClip: 'padding-box'
+  },
+  ringsCenterText: {
+    position: 'relative',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, #020617, #020617 60%, #0b1220 100%)',
+    width: 70,
+    height: 70,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 0 3px rgba(15,23,42,1)'
+  },
+  ringsCenterNumber: {
+    fontSize: 18,
+    fontWeight: 700
+  },
+  ringsCenterLabel: {
+    fontSize: 11,
+    color: '#9ca3af'
+  },
+  ringsLegend: {
+    flex: 1,
+    minWidth: 200,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8
+  },
+  ringsLegendItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8
+  },
+  ringsDot: {
+    width: 10,
+    height: 10,
+    borderRadius: '50%'
+  },
+  ringsLegendLabel: {
+    margin: 0,
+    fontSize: 12,
+    color: '#e5e7eb'
+  },
+  ringsLegendValue: {
+    margin: 0,
+    fontSize: 11,
+    color: '#9ca3af'
+  },
+
+  // GRID PRINCIPAL
   mainGrid: {
     display: 'grid',
     gridTemplateColumns: 'minmax(0,1.7fr) minmax(0,1.2fr)',
@@ -699,6 +908,34 @@ const styles = {
     color: '#e5e7eb'
   },
 
+  // EQUIVALENCIAS
+  equivalenceCard: {
+    borderRadius: 18,
+    padding: 14,
+    background: 'rgba(15,23,42,0.98)',
+    border: '1px solid rgba(148,163,184,0.5)'
+  },
+  equivalenceTitle: {
+    margin: 0,
+    marginBottom: 4,
+    fontSize: 13,
+    fontWeight: 600,
+    color: '#f9fafb'
+  },
+  equivalenceText: {
+    margin: 0,
+    marginBottom: 4,
+    fontSize: 12.5,
+    color: '#e5e7eb'
+  },
+  equivalenceNote: {
+    margin: 0,
+    marginTop: 2,
+    fontSize: 11,
+    color: '#9ca3af'
+  },
+
+  // FOOTER
   footerCard: {
     borderRadius: 18,
     padding: 14,
