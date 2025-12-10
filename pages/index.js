@@ -13,6 +13,7 @@ export default function ClientWrapped() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [view, setView] = useState('intro'); // 'intro' | 'input' | 'results'
   const containerRef = useRef(null);
 
   async function buscar(e) {
@@ -27,6 +28,7 @@ export default function ClientWrapped() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Error');
       setData(json);
+      setView('results');
 
       setTimeout(() => {
         if (containerRef.current) {
@@ -51,7 +53,7 @@ export default function ClientWrapped() {
   const maratones = data ? (kmEstimados / 42.195).toFixed(1) : '0.0';
 
   const horasEntrenadas = data ? (data.total_asistencias * 0.75).toFixed(1) : '0.0'; // 45 min por clase
-  const everests = data ? ((data.total_asistencias * 85) / 8848).toFixed(2) : '0.00'; // 500 escalones ~ 85m por clase
+  const everests = data ? ((data.total_asistencias * 85) / 8848).toFixed(2) : '0.00'; // 85m por clase
 
   const objetivoSemanal = 4;
   const porcentajeConstancia = data
@@ -175,8 +177,51 @@ export default function ClientWrapped() {
         )}
 
         <div style={styles.container}>
+          {/* PANTALLA DE BIENVENIDA */}
+          {view === 'intro' && (
+            <section style={styles.introHero}>
+              <div style={styles.introGradient} />
+              <div style={styles.introContent}>
+                <div style={styles.introBadgeRow}>
+                  <div style={styles.logoWrap}>
+                    <img src="/caamp-logo.png" alt="Caamp" style={styles.logo} />
+                    <span style={styles.brandText}>CAAMP</span>
+                  </div>
+                  <span style={styles.pill}>Client Wrapped · 2025</span>
+                </div>
+
+                <h1 style={styles.introTitle}>
+                  Bienvenido a tu
+                  <span style={styles.introGradientText}> Caamp Wrapped</span>
+                </h1>
+
+                <p style={styles.introSubtitle}>
+                  Este no es cualquier resumen. Es todo lo que entrenaste, dejaste, sudaste y
+                  elegiste construir este año adentro de Caamp.
+                </p>
+
+                <p style={styles.introLine}>
+                  Vamos a convertir tus asistencias en historias, anillos de movimiento y retos
+                  gigantes que ya cumpliste.
+                </p>
+
+                <button
+                  style={styles.introButton}
+                  onClick={() => {
+                    setView('input');
+                    setError('');
+                  }}
+                >
+                  Ver mi año en Caamp
+                </button>
+
+                <p style={styles.introHint}>Toca para continuar</p>
+              </div>
+            </section>
+          )}
+
           {/* HERO / INPUT */}
-          {!data && (
+          {view === 'input' && !data && (
             <section style={styles.hero}>
               <div style={styles.heroTopRow}>
                 <div style={styles.logoWrap}>
@@ -217,7 +262,7 @@ export default function ClientWrapped() {
           )}
 
           {/* RESULTADOS */}
-          {data && (
+          {view === 'results' && data && (
             <section style={styles.results} ref={containerRef}>
               {/* Cabecera */}
               <div style={styles.headerRow}>
@@ -433,6 +478,7 @@ export default function ClientWrapped() {
                       setData(null);
                       setError('');
                       setName('');
+                      setView('input');
                     }}
                   >
                     Ver otro cliente
@@ -484,7 +530,91 @@ const styles = {
     pointerEvents: 'none'
   },
 
-  // HERO
+  // INTRO HERO
+  introHero: {
+    position: 'relative',
+    borderRadius: 28,
+    padding: 20,
+    overflow: 'hidden',
+    boxShadow: '0 30px 90px rgba(15,23,42,1)',
+    border: '1px solid rgba(148,163,184,0.4)',
+    marginBottom: 10
+  },
+  introGradient: {
+    position: 'absolute',
+    inset: '-20%',
+    backgroundImage:
+      'conic-gradient(from 160deg, #22c55e, #06b6d4, #eab308, #ec4899, #22c55e)',
+    backgroundSize: '200% 200%',
+    animation: 'gradientMove 22s ease-in-out infinite',
+    opacity: 0.9
+  },
+  introContent: {
+    position: 'relative',
+    borderRadius: 24,
+    padding: 18,
+    background:
+      'radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.98) 60%, rgba(15,23,42,1))',
+    color: '#f9fafb'
+  },
+  introBadgeRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+    marginBottom: 12
+  },
+  introTitle: {
+    margin: 0,
+    marginBottom: 8,
+    fontSize: 28,
+    fontWeight: 800
+  },
+  introGradientText: {
+    display: 'block',
+    backgroundImage:
+      'linear-gradient(120deg, #22c55e, #06b6d4, #eab308)',
+    WebkitBackgroundClip: 'text',
+    color: 'transparent',
+    backgroundSize: '220% 220%',
+    animation: 'gradientPulse 10s ease-in-out infinite'
+  },
+  introSubtitle: {
+    margin: 0,
+    marginBottom: 8,
+    fontSize: 14,
+    lineHeight: 1.6,
+    color: '#e5e7eb',
+    maxWidth: 520
+  },
+  introLine: {
+    margin: 0,
+    marginBottom: 14,
+    fontSize: 13,
+    color: '#e5e7eb'
+  },
+  introButton: {
+    padding: '13px 20px',
+    borderRadius: 999,
+    border: 'none',
+    backgroundImage:
+      'linear-gradient(120deg, #f97316, #eab308, #22c55e)',
+    color: '#0f172a',
+    fontWeight: 700,
+    fontSize: 13,
+    textTransform: 'uppercase',
+    letterSpacing: 1.3,
+    cursor: 'pointer',
+    boxShadow: '0 12px 30px rgba(0,0,0,0.6)'
+  },
+  introHint: {
+    margin: 0,
+    marginTop: 8,
+    fontSize: 11,
+    color: '#cbd5f5'
+  },
+
+  // HERO (INPUT)
   hero: {
     background:
       'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,1), rgba(15,23,42,0.96))',
