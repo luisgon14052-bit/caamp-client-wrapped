@@ -165,7 +165,7 @@ export default function ClientWrapped() {
               </div>
               <p style={styles.loadingTitle}>Armando tu Wrapped…</p>
               <p style={styles.loadingText}>
-                Calculando tu lugar dentro de la comunidad y tu año en movimiento.
+                Calculando tu año en números, historias y movimiento.
               </p>
               <div style={styles.loadingDots}>
                 <span style={{ ...styles.loadingDot, animationDelay: '0s' }} />
@@ -196,13 +196,11 @@ export default function ClientWrapped() {
                 </h1>
 
                 <p style={styles.introSubtitle}>
-                  Este no es cualquier resumen. Es todo lo que entrenaste, dejaste, sudaste y
-                  elegiste construir este año adentro de Caamp.
+                  Un resumen visual de todo lo que moviste, sumaste y construiste este año en Caamp.
                 </p>
 
                 <p style={styles.introLine}>
-                  Vamos a convertir tus asistencias en historias, anillos de movimiento y retos
-                  gigantes que ya cumpliste.
+                  Da igual en qué punto empezaste. Lo importante es todo lo que ya avanzaste.
                 </p>
 
                 <button
@@ -236,8 +234,8 @@ export default function ClientWrapped() {
               </h1>
 
               <p style={styles.subtitle}>
-                Ve cuántas veces entrenaste, qué tan constante fuiste y qué tan arriba estás dentro
-                de la comunidad. Es tu resumen oficial de movimiento este año.
+                Descubre cuántas veces entrenaste, qué tan constante fuiste y en qué lugar estás
+                dentro de la comunidad.
               </p>
 
               <form onSubmit={buscar} style={styles.form}>
@@ -265,31 +263,33 @@ export default function ClientWrapped() {
           {view === 'results' && data && (
             <section style={styles.results} ref={containerRef}>
               {/* Cabecera */}
-              <div style={styles.headerRow}>
-                <div style={styles.headerLeft}>
+              <div style={styles.headerCard}>
+                <div style={styles.headerTopRow}>
                   <div style={styles.logoRow}>
                     <img src="/caamp-logo.png" alt="Caamp" style={styles.logoSmall} />
                     <span style={styles.pill}>Client Wrapped · 2025</span>
                   </div>
-                  <p style={styles.smallLabel}>Este año fuiste…</p>
-                  <h2 style={styles.clientName}>{data.name}</h2>
-                  <p style={styles.clientTitle}>{data.titulo}</p>
                 </div>
+                <p style={styles.smallLabel}>Este año fuiste…</p>
+                <h2 style={styles.clientName}>{data.name}</h2>
+                <p style={styles.clientTitle}>{data.titulo}</p>
 
-                <div style={styles.levelCard}>
-                  <p style={styles.levelLabel}>Nivel de movimiento</p>
-                  <p style={styles.levelValue}>{data.nivel}</p>
-                  <p style={styles.levelDetail}>
-                    Entrenaste más que <strong>{data.percentile}%</strong> de Caamp.
-                  </p>
+                <div style={styles.levelRow}>
+                  <div style={styles.levelCard}>
+                    <p style={styles.levelLabel}>Nivel de movimiento</p>
+                    <p style={styles.levelValue}>{data.nivel}</p>
+                    <p style={styles.levelDetail}>
+                      Entrenaste más que <strong>{data.percentile}%</strong> de Caamp.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* ANILLOS TIPO APPLE WATCH */}
+              {/* ANILLOS LIMPIOS */}
               <div style={styles.ringsCard}>
-                <p style={styles.ringsTitle}>Tus anillos de movimiento</p>
+                <p style={styles.ringsTitle}>Tu energía en círculos</p>
                 <p style={styles.ringsSubtitle}>
-                  Si tu año en Caamp fuera un Apple Watch, así se verían tus anillos:
+                  Así se ve todo lo que hiciste este año, resumido en tres anillos:
                 </p>
 
                 <div style={styles.ringsWrapper}>
@@ -356,64 +356,60 @@ export default function ClientWrapped() {
                 </div>
               </div>
 
-              {/* Fila principal */}
-              <div style={styles.mainGrid}>
-                {/* Total asistencias */}
-                <div style={styles.mainCard}>
-                  <p style={styles.cardTag}>Total de entrenamientos</p>
+              {/* TOTAL + CONSTANCIA (STACKED PARA CEL) */}
+              <div style={styles.mainCard}>
+                <p style={styles.cardTag}>Total de entrenamientos</p>
 
-                  <div style={styles.mainNumberRow}>
-                    <span style={styles.mainNumber}>{data.total_asistencias}</span>
-                    <span style={styles.mainNumberCaption}>veces que elegiste moverte</span>
+                <div style={styles.mainNumberRow}>
+                  <span style={styles.mainNumber}>{data.total_asistencias}</span>
+                  <span style={styles.mainNumberCaption}>veces que elegiste moverte</span>
+                </div>
+
+                <div style={styles.progressBlock}>
+                  <div style={styles.progressTrack}>
+                    <div
+                      style={{
+                        ...styles.progressBar,
+                        width: `${progress}%`
+                      }}
+                    />
                   </div>
-
-                  <div style={styles.progressBlock}>
-                    <div style={styles.progressTrack}>
-                      <div
-                        style={{
-                          ...styles.progressBar,
-                          width: `${progress}%`
-                        }}
-                      />
-                    </div>
-                    <div style={styles.progressLabels}>
-                      <span style={styles.progressLabel}>Inicio del año</span>
-                      <span style={styles.progressLabelRight}>Máximo de la comunidad</span>
-                    </div>
-                  </div>
-
-                  <div style={styles.chipsRow}>
-                    <span style={styles.chipPrimary}>
-                      Top {data.percentile}% de la comunidad
-                    </span>
-                    <span style={styles.chipOutline}>
-                      Lugar #{data.rank} de {data.total_clients} personas
-                    </span>
+                  <div style={styles.progressLabels}>
+                    <span style={styles.progressLabel}>Inicio del año</span>
+                    <span style={styles.progressLabelRight}>Máximo de la comunidad</span>
                   </div>
                 </div>
 
-                {/* Constancia */}
-                <div style={styles.secondaryCard}>
-                  <p style={styles.cardTag}>Tu constancia</p>
-
-                  <div style={styles.statsRow}>
-                    <div style={styles.statBlock}>
-                      <p style={styles.statLabel}>Promedio al mes</p>
-                      <p style={styles.statNumber}>{data.promedio_mensual}</p>
-                      <p style={styles.statHint}>clases por mes</p>
-                    </div>
-                    <div style={styles.statBlock}>
-                      <p style={styles.statLabel}>Promedio a la semana</p>
-                      <p style={styles.statNumber}>{data.promedio_semanal}</p>
-                      <p style={styles.statHint}>sesiones por semana</p>
-                    </div>
-                  </div>
-
-                  <p style={styles.secondaryText}>
-                    No fue suerte. Fueron todas esas veces que llegaste, te moviste y saliste mejor
-                    de lo que entraste.
-                  </p>
+                <div style={styles.chipsRow}>
+                  <span style={styles.chipPrimary}>
+                    Top {data.percentile}% de la comunidad
+                  </span>
+                  <span style={styles.chipOutline}>
+                    Lugar #{data.rank} de {data.total_clients} personas
+                  </span>
                 </div>
+              </div>
+
+              <div style={styles.secondaryCard}>
+                <p style={styles.cardTag}>Tu constancia</p>
+
+                <div style={styles.statsRow}>
+                  <div style={styles.statBlock}>
+                    <p style={styles.statLabel}>Promedio al mes</p>
+                    <p style={styles.statNumber}>{data.promedio_mensual}</p>
+                    <p style={styles.statHint}>clases por mes</p>
+                  </div>
+                  <div style={styles.statBlock}>
+                    <p style={styles.statLabel}>Promedio a la semana</p>
+                    <p style={styles.statNumber}>{data.promedio_semanal}</p>
+                    <p style={styles.statHint}>sesiones por semana</p>
+                  </div>
+                </div>
+
+                <p style={styles.secondaryText}>
+                  No fue suerte. Fueron todas esas veces que llegaste, entrenaste y saliste distinto
+                  de como entraste.
+                </p>
               </div>
 
               {/* Equivalencias tipo maratón / Everest */}
@@ -439,8 +435,8 @@ export default function ClientWrapped() {
               <div style={styles.footerCard}>
                 <p style={styles.footerTitle}>Lo que construiste este año</p>
                 <p style={styles.footerText}>
-                  Cada asistencia suma a algo más grande que un número: energía, confianza,
-                  disciplina. Tu cuerpo se acuerda de todas esas veces que estuviste aquí.
+                  Cada asistencia se convirtió en energía, confianza y disciplina. Nada de esto fue
+                  casualidad.
                 </p>
 
                 <p style={styles.footerHighlight}>
@@ -498,7 +494,7 @@ const styles = {
     minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
-    padding: '24px 12px',
+    padding: '20px 10px',
     position: 'relative',
     overflow: 'hidden'
   },
@@ -507,7 +503,10 @@ const styles = {
     maxWidth: 960,
     animation: 'fadeUp 480ms ease-out',
     position: 'relative',
-    zIndex: 2
+    zIndex: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12
   },
 
   // Fondo animado
@@ -534,11 +533,10 @@ const styles = {
   introHero: {
     position: 'relative',
     borderRadius: 28,
-    padding: 20,
+    padding: 16,
     overflow: 'hidden',
-    boxShadow: '0 30px 90px rgba(15,23,42,1)',
-    border: '1px solid rgba(148,163,184,0.4)',
-    marginBottom: 10
+    boxShadow: '0 24px 70px rgba(15,23,42,1)',
+    border: '1px solid rgba(148,163,184,0.4)'
   },
   introGradient: {
     position: 'absolute',
@@ -552,7 +550,7 @@ const styles = {
   introContent: {
     position: 'relative',
     borderRadius: 24,
-    padding: 18,
+    padding: 16,
     background:
       'radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.98) 60%, rgba(15,23,42,1))',
     color: '#f9fafb'
@@ -562,12 +560,12 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 10,
-    marginBottom: 12
+    marginBottom: 10
   },
   introTitle: {
     margin: 0,
     marginBottom: 8,
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 800
   },
   introGradientText: {
@@ -581,20 +579,20 @@ const styles = {
   },
   introSubtitle: {
     margin: 0,
-    marginBottom: 8,
+    marginBottom: 6,
     fontSize: 14,
-    lineHeight: 1.6,
+    lineHeight: 1.5,
     color: '#e5e7eb',
     maxWidth: 520
   },
   introLine: {
     margin: 0,
-    marginBottom: 14,
+    marginBottom: 12,
     fontSize: 13,
     color: '#e5e7eb'
   },
   introButton: {
-    padding: '13px 20px',
+    padding: '11px 18px',
     borderRadius: 999,
     border: 'none',
     backgroundImage:
@@ -603,7 +601,7 @@ const styles = {
     fontWeight: 700,
     fontSize: 13,
     textTransform: 'uppercase',
-    letterSpacing: 1.3,
+    letterSpacing: 1.2,
     cursor: 'pointer',
     boxShadow: '0 12px 30px rgba(0,0,0,0.6)'
   },
@@ -619,9 +617,9 @@ const styles = {
     background:
       'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,1), rgba(15,23,42,0.96))',
     borderRadius: 24,
-    padding: 20,
+    padding: 16,
     border: '1px solid rgba(148,163,184,0.32)',
-    boxShadow: '0 28px 80px rgba(15,23,42,0.95)',
+    boxShadow: '0 24px 70px rgba(15,23,42,0.95)',
     color: '#e5e7eb'
   },
   heroTopRow: {
@@ -629,7 +627,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 10,
-    marginBottom: 14
+    marginBottom: 10
   },
   logoWrap: {
     display: 'flex',
@@ -637,11 +635,11 @@ const styles = {
     gap: 8
   },
   logo: {
-    height: 32,
+    height: 30,
     width: 'auto'
   },
   brandText: {
-    fontSize: 12,
+    fontSize: 11,
     letterSpacing: 4,
     textTransform: 'uppercase',
     color: '#9ca3af'
@@ -652,14 +650,14 @@ const styles = {
     border: '1px solid rgba(148,163,184,0.7)',
     fontSize: 10,
     textTransform: 'uppercase',
-    letterSpacing: 1.5,
+    letterSpacing: 1.4,
     color: '#e5e7eb',
     whiteSpace: 'nowrap'
   },
   title: {
     margin: 0,
     marginBottom: 6,
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 800,
     color: '#f9fafb'
   },
@@ -673,9 +671,9 @@ const styles = {
   },
   subtitle: {
     margin: 0,
-    marginBottom: 16,
+    marginBottom: 14,
     fontSize: 14,
-    lineHeight: 1.6,
+    lineHeight: 1.5,
     color: '#cbd5f5',
     maxWidth: 520
   },
@@ -688,7 +686,7 @@ const styles = {
   input: {
     flex: 1,
     minWidth: 200,
-    padding: 12,
+    padding: 11,
     borderRadius: 999,
     border: '1px solid rgba(148,163,184,0.8)',
     background: 'rgba(15,23,42,0.95)',
@@ -697,7 +695,7 @@ const styles = {
     outline: 'none'
   },
   ctaButton: {
-    padding: '12px 18px',
+    padding: '11px 18px',
     borderRadius: 999,
     border: 'none',
     backgroundImage:
@@ -723,42 +721,38 @@ const styles = {
 
   // RESULTADOS
   results: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 10
+  },
+  headerCard: {
     background:
       'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,1))',
     borderRadius: 24,
-    padding: 18,
+    padding: 16,
     border: '1px solid rgba(148,163,184,0.45)',
-    boxShadow: '0 28px 80px rgba(15,23,42,0.98)',
-    marginTop: 10,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16
+    boxShadow: '0 24px 70px rgba(15,23,42,0.98)'
   },
-  headerRow: {
+  headerTopRow: {
     display: 'flex',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 14
-  },
-  headerLeft: {
-    flex: 1,
-    minWidth: 220
+    alignItems: 'center',
+    marginBottom: 6
   },
   logoRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 6
+    gap: 8
   },
   logoSmall: {
     height: 28,
     width: 'auto'
   },
   smallLabel: {
-    margin: 0,
+    margin: '4px 0 0',
     fontSize: 11,
     textTransform: 'uppercase',
-    letterSpacing: 1.4,
+    letterSpacing: 1.3,
     color: '#9ca3af'
   },
   clientName: {
@@ -773,15 +767,20 @@ const styles = {
     color: '#e5e7eb',
     maxWidth: 360
   },
+  levelRow: {
+    marginTop: 10,
+    display: 'flex',
+    justifyContent: 'flex-start'
+  },
   levelCard: {
-    minWidth: 210,
     borderRadius: 18,
-    padding: 12,
+    padding: 10,
     background:
       'radial-gradient(circle at top left, rgba(34,197,94,0.26), rgba(15,23,42,1))',
     border: '1px solid rgba(34,197,94,0.75)',
     color: '#f9fafb',
-    animation: 'cardFloat 7s ease-in-out infinite'
+    animation: 'cardFloat 7s ease-in-out infinite',
+    maxWidth: 260
   },
   levelLabel: {
     margin: 0,
@@ -803,7 +802,7 @@ const styles = {
 
   // ANILLOS
   ringsCard: {
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 14,
     background: 'rgba(15,23,42,0.98)',
     border: '1px solid rgba(148,163,184,0.5)',
@@ -823,21 +822,20 @@ const styles = {
     color: '#e5e7eb'
   },
   ringsWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 16,
     marginTop: 6,
-    alignItems: 'center'
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 12
   },
   ringsGraphic: {
     position: 'relative',
-    width: 140,
-    height: 140,
+    width: 150,
+    height: 150,
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0
+    justifyContent: 'center'
   },
   ringBase: {
     position: 'absolute',
@@ -850,12 +848,12 @@ const styles = {
     backgroundClip: 'padding-box'
   },
   ringMiddle: {
-    inset: 15,
+    inset: 16,
     padding: 6,
     backgroundClip: 'padding-box'
   },
   ringInner: {
-    inset: 30,
+    inset: 32,
     padding: 6,
     backgroundClip: 'padding-box'
   },
@@ -863,8 +861,8 @@ const styles = {
     position: 'relative',
     borderRadius: '50%',
     background: 'radial-gradient(circle, #020617, #020617 60%, #0b1220 100%)',
-    width: 70,
-    height: 70,
+    width: 76,
+    height: 76,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -872,7 +870,7 @@ const styles = {
     boxShadow: '0 0 0 3px rgba(15,23,42,1)'
   },
   ringsCenterNumber: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 700
   },
   ringsCenterLabel: {
@@ -880,11 +878,10 @@ const styles = {
     color: '#9ca3af'
   },
   ringsLegend: {
-    flex: 1,
-    minWidth: 200,
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    gap: 8
+    gap: 6
   },
   ringsLegendItem: {
     display: 'flex',
@@ -907,14 +904,9 @@ const styles = {
     color: '#9ca3af'
   },
 
-  // GRID PRINCIPAL
-  mainGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0,1.7fr) minmax(0,1.2fr)',
-    gap: 14
-  },
+  // TOTAL CARD
   mainCard: {
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 14,
     background: 'rgba(15,23,42,0.98)',
     border: '1px solid rgba(148,163,184,0.55)',
@@ -936,7 +928,7 @@ const styles = {
     marginBottom: 8
   },
   mainNumber: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: 800,
     color: '#f9fafb'
   },
@@ -949,7 +941,7 @@ const styles = {
   },
   progressTrack: {
     width: '100%',
-    height: 9,
+    height: 8,
     borderRadius: 999,
     background: 'rgba(15,23,42,1)',
     overflow: 'hidden',
@@ -997,8 +989,9 @@ const styles = {
     color: '#e5e7eb'
   },
 
+  // CONSTANCIA
   secondaryCard: {
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 14,
     background: 'rgba(15,23,42,0.96)',
     border: '1px solid rgba(148,163,184,0.5)'
@@ -1040,7 +1033,7 @@ const styles = {
 
   // EQUIVALENCIAS
   equivalenceCard: {
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 14,
     background: 'rgba(15,23,42,0.98)',
     border: '1px solid rgba(148,163,184,0.5)'
@@ -1067,11 +1060,11 @@ const styles = {
 
   // FOOTER
   footerCard: {
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 14,
     background: 'rgba(15,23,42,0.98)',
     border: '1px solid rgba(148,163,184,0.5)',
-    marginTop: 4
+    marginBottom: 4
   },
   footerTitle: {
     margin: 0,
