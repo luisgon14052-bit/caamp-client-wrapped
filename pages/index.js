@@ -56,9 +56,11 @@ export default function ClientWrapped() {
           margin: 0;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
             'Helvetica Neue', Arial, sans-serif;
-          background: radial-gradient(circle at top, #020617 0, #000 55%, #020617 100%);
+          background: #020617;
           color: #f9fafb;
+          -webkit-font-smoothing: antialiased;
         }
+
         @keyframes fadeUp {
           from {
             opacity: 0;
@@ -67,6 +69,17 @@ export default function ClientWrapped() {
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+        @keyframes gradientMove {
+          0% {
+            background-position: 0% 0%;
+          }
+          50% {
+            background-position: 100% 100%;
+          }
+          100% {
+            background-position: 0% 0%;
           }
         }
         @keyframes gradientPulse {
@@ -106,7 +119,7 @@ export default function ClientWrapped() {
           }
           50% {
             opacity: 1;
-            transform: scale(1.15);
+            transform: scale(1.12);
           }
           100% {
             opacity: 0.3;
@@ -114,7 +127,6 @@ export default function ClientWrapped() {
           }
         }
 
-        /* Ajustes mobile */
         @media (max-width: 640px) {
           h1 {
             font-size: 26px !important;
@@ -123,6 +135,10 @@ export default function ClientWrapped() {
       `}</style>
 
       <div style={styles.page}>
+        {/* CAPA DE FONDO ANIMADA */}
+        <div style={styles.animatedBgLayer} />
+        <div style={styles.animatedBgNoise} />
+
         {/* OVERLAY DE LOADING */}
         {loading && (
           <div style={styles.loadingOverlay}>
@@ -138,14 +154,12 @@ export default function ClientWrapped() {
               </p>
               <div style={styles.loadingDots}>
                 <span style={{ ...styles.loadingDot, animationDelay: '0s' }} />
-                <span style={{ ...styles.loadingDot, animationDelay: '0.18s' }} />
-                <span style={{ ...styles.loadingDot, animationDelay: '0.36s' }} />
+                <span style={{ ...styles.loadingDot, animationDelay: '0.16s' }} />
+                <span style={{ ...styles.loadingDot, animationDelay: '0.32s' }} />
               </div>
             </div>
           </div>
         )}
-
-        <div style={styles.gradientAccent} />
 
         <div style={styles.container}>
           {/* HERO / INPUT */}
@@ -335,28 +349,37 @@ const styles = {
     minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
-    padding: '24px 12px'
+    padding: '24px 12px',
+    position: 'relative',
+    overflow: 'hidden'
   },
   container: {
     width: '100%',
     maxWidth: 960,
     animation: 'fadeUp 480ms ease-out',
     position: 'relative',
-    zIndex: 1
+    zIndex: 2
   },
-  gradientAccent: {
+
+  // Fondo animado
+  animatedBgLayer: {
     position: 'fixed',
-    top: -120,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: 420,
-    height: 420,
-    borderRadius: 999,
+    inset: 0,
     background:
-      'conic-gradient(from 160deg, rgba(34,197,94,0.55), rgba(8,145,178,0.6), transparent)',
-    filter: 'blur(40px)',
-    opacity: 0.55,
+      'linear-gradient(130deg,#020617,#020617,#020617)',
     zIndex: 0
+  },
+  animatedBgNoise: {
+    position: 'fixed',
+    inset: '-40%',
+    backgroundImage:
+      'radial-gradient(circle at 0% 0%, rgba(34,197,94,0.45) 0, transparent 55%), radial-gradient(circle at 100% 100%, rgba(56,189,248,0.4) 0, transparent 55%), radial-gradient(circle at 0% 100%, rgba(234,179,8,0.32) 0, transparent 55%)',
+    backgroundSize: '140% 140%',
+    animation: 'gradientMove 28s ease-in-out infinite',
+    opacity: 0.6,
+    filter: 'blur(28px)',
+    zIndex: 0,
+    pointerEvents: 'none'
   },
 
   // HERO
@@ -365,8 +388,8 @@ const styles = {
       'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,1), rgba(15,23,42,0.96))',
     borderRadius: 24,
     padding: 20,
-    border: '1px solid rgba(148,163,184,0.28)',
-    boxShadow: '0 24px 60px rgba(15,23,42,0.9)',
+    border: '1px solid rgba(148,163,184,0.32)',
+    boxShadow: '0 28px 80px rgba(15,23,42,0.95)',
     color: '#e5e7eb'
   },
   heroTopRow: {
@@ -394,7 +417,7 @@ const styles = {
   pill: {
     padding: '5px 10px',
     borderRadius: 999,
-    border: '1px solid rgba(148,163,184,0.6)',
+    border: '1px solid rgba(148,163,184,0.7)',
     fontSize: 10,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
@@ -472,8 +495,8 @@ const styles = {
       'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,1))',
     borderRadius: 24,
     padding: 18,
-    border: '1px solid rgba(148,163,184,0.4)',
-    boxShadow: '0 24px 60px rgba(15,23,42,0.95)',
+    border: '1px solid rgba(148,163,184,0.45)',
+    boxShadow: '0 28px 80px rgba(15,23,42,0.98)',
     marginTop: 10,
     display: 'flex',
     flexDirection: 'column',
@@ -523,8 +546,8 @@ const styles = {
     borderRadius: 18,
     padding: 12,
     background:
-      'radial-gradient(circle at top left, rgba(34,197,94,0.22), rgba(15,23,42,1))',
-    border: '1px solid rgba(34,197,94,0.65)',
+      'radial-gradient(circle at top left, rgba(34,197,94,0.26), rgba(15,23,42,1))',
+    border: '1px solid rgba(34,197,94,0.75)',
     color: '#f9fafb',
     animation: 'cardFloat 7s ease-in-out infinite'
   },
@@ -555,7 +578,7 @@ const styles = {
     borderRadius: 18,
     padding: 14,
     background: 'rgba(15,23,42,0.98)',
-    border: '1px solid rgba(148,163,184,0.5)',
+    border: '1px solid rgba(148,163,184,0.55)',
     boxShadow: '0 18px 40px rgba(15,23,42,0.9)'
   },
   cardTag: {
@@ -591,7 +614,7 @@ const styles = {
     borderRadius: 999,
     background: 'rgba(15,23,42,1)',
     overflow: 'hidden',
-    border: '1px solid rgba(51,65,85,0.8)'
+    border: '1px solid rgba(51,65,85,0.85)'
   },
   progressBar: {
     height: '100%',
@@ -630,7 +653,7 @@ const styles = {
   chipOutline: {
     padding: '5px 9px',
     borderRadius: 999,
-    border: '1px solid rgba(148,163,184,0.7)',
+    border: '1px solid rgba(148,163,184,0.8)',
     fontSize: 11,
     color: '#e5e7eb'
   },
@@ -639,7 +662,7 @@ const styles = {
     borderRadius: 18,
     padding: 14,
     background: 'rgba(15,23,42,0.96)',
-    border: '1px solid rgba(148,163,184,0.45)'
+    border: '1px solid rgba(148,163,184,0.5)'
   },
   statsRow: {
     display: 'flex',
@@ -680,7 +703,7 @@ const styles = {
     borderRadius: 18,
     padding: 14,
     background: 'rgba(15,23,42,0.98)',
-    border: '1px solid rgba(148,163,184,0.45)',
+    border: '1px solid rgba(148,163,184,0.5)',
     marginTop: 4
   },
   footerTitle: {
@@ -710,8 +733,8 @@ const styles = {
   shareButton: {
     padding: '9px 14px',
     borderRadius: 999,
-    border: '1px solid rgba(34,197,94,0.8)',
-    background: 'rgba(22,163,74,0.12)',
+    border: '1px solid rgba(34,197,94,0.9)',
+    background: 'rgba(22,163,74,0.16)',
     color: '#bbf7d0',
     fontSize: 11,
     textTransform: 'uppercase',
@@ -721,7 +744,7 @@ const styles = {
   backButton: {
     padding: '9px 14px',
     borderRadius: 999,
-    border: '1px solid rgba(148,163,184,0.8)',
+    border: '1px solid rgba(148,163,184,0.9)',
     background: 'transparent',
     color: '#e5e7eb',
     fontSize: 11,
@@ -735,8 +758,8 @@ const styles = {
     position: 'fixed',
     inset: 0,
     zIndex: 50,
-    background: 'rgba(2,6,23,0.92)',
-    backdropFilter: 'blur(14px)',
+    background: 'rgba(2,6,23,0.94)',
+    backdropFilter: 'blur(16px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
@@ -747,10 +770,10 @@ const styles = {
     width: '90%',
     maxWidth: 320,
     background:
-      'radial-gradient(circle at top, rgba(34,197,94,0.25), rgba(15,23,42,1))',
-    border: '1px solid rgba(34,197,94,0.7)',
+      'radial-gradient(circle at top, rgba(34,197,94,0.3), rgba(15,23,42,1))',
+    border: '1px solid rgba(34,197,94,0.8)',
     textAlign: 'center',
-    boxShadow: '0 22px 50px rgba(0,0,0,0.9)'
+    boxShadow: '0 26px 60px rgba(0,0,0,0.95)'
   },
   loadingRingWrap: {
     display: 'flex',
@@ -764,7 +787,7 @@ const styles = {
     border: '3px solid rgba(15,23,42,1)',
     borderTopColor: '#22c55e',
     borderRightColor: '#06b6d4',
-    animation: 'spinRing 1.2s linear infinite',
+    animation: 'spinRing 1.1s linear infinite',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -777,7 +800,7 @@ const styles = {
     borderRadius: '50%',
     backgroundImage:
       'linear-gradient(135deg, #22c55e, #06b6d4, #eab308)',
-    opacity: 0.9
+    opacity: 0.92
   },
   loadingTitle: {
     margin: 0,
