@@ -16,13 +16,12 @@ export default function ClientWrapped() {
 
     try {
       const cleanId = clientId.trim();
-      if (!cleanId) {
-        throw new Error('ID vacío');
-      }
+      if (!cleanId) throw new Error('ID vacío');
 
       const res = await fetch('/api/client?id=' + encodeURIComponent(cleanId));
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Error');
+
       setData(json);
       setView('results');
 
@@ -32,9 +31,7 @@ export default function ClientWrapped() {
         }
       }, 120);
     } catch (err) {
-      setError(
-        'No encontramos tu Wrapped. Revisa tu número de cliente o pregunta en front desk 💚'
-      );
+      setError('No encontramos tu Wrapped. Revisa tu número de cliente o pregunta en front desk 💚');
       setData(null);
     } finally {
       setLoading(false);
@@ -46,12 +43,10 @@ export default function ClientWrapped() {
       ? Math.min(100, Math.round((data.total_asistencias / data.max_asistencias) * 100))
       : 0;
 
-  // Métricas para equivalencias y anillos
-  const kmEstimados = data ? data.total_asistencias * 5 : 0; // 5 km por clase (hipotético)
+  const kmEstimados = data ? data.total_asistencias * 5 : 0;
   const maratones = data ? (kmEstimados / 42.195).toFixed(1) : '0.0';
-
-  const horasEntrenadas = data ? (data.total_asistencias * 0.75).toFixed(1) : '0.0'; // 45 min por clase
-  const everests = data ? ((data.total_asistencias * 85) / 8848).toFixed(2) : '0.00'; // 85m por clase
+  const horasEntrenadas = data ? (data.total_asistencias * 0.75).toFixed(1) : '0.0';
+  const everests = data ? ((data.total_asistencias * 85) / 8848).toFixed(2) : '0.00';
 
   const objetivoSemanal = 4;
   const porcentajeConstancia = data
@@ -69,15 +64,15 @@ export default function ClientWrapped() {
           margin: 0;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
             'Helvetica Neue', Arial, sans-serif;
-          background: #020617;
-          color: #f9fafb;
+          background: #fbfbff;
+          color: #0f172a;
           -webkit-font-smoothing: antialiased;
         }
 
         @keyframes fadeUp {
           from {
             opacity: 0;
-            transform: translateY(18px);
+            transform: translateY(14px);
           }
           to {
             opacity: 1;
@@ -111,7 +106,7 @@ export default function ClientWrapped() {
             transform: translateY(0);
           }
           50% {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
           }
           100% {
             transform: translateY(0);
@@ -127,20 +122,20 @@ export default function ClientWrapped() {
         }
         @keyframes dotPulse {
           0% {
-            opacity: 0.3;
+            opacity: 0.25;
             transform: scale(0.9);
           }
           50% {
             opacity: 1;
-            transform: scale(1.12);
+            transform: scale(1.15);
           }
           100% {
-            opacity: 0.3;
+            opacity: 0.25;
             transform: scale(0.9);
           }
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 520px) {
           h1 {
             font-size: 26px !important;
           }
@@ -148,11 +143,11 @@ export default function ClientWrapped() {
       `}</style>
 
       <div style={styles.page}>
-        {/* FONDO ANIMADO */}
+        {/* FONDO CLARO ANIMADO */}
         <div style={styles.animatedBgLayer} />
         <div style={styles.animatedBgNoise} />
 
-        {/* OVERLAY DE LOADING */}
+        {/* LOADING */}
         {loading && (
           <div style={styles.loadingOverlay}>
             <div style={styles.loadingCard}>
@@ -162,9 +157,7 @@ export default function ClientWrapped() {
                 </div>
               </div>
               <p style={styles.loadingTitle}>Armando tu Wrapped…</p>
-              <p style={styles.loadingText}>
-                Calculando tu año en números, historias y movimiento.
-              </p>
+              <p style={styles.loadingText}>Procesando tu año en Caamp.</p>
               <div style={styles.loadingDots}>
                 <span style={{ ...styles.loadingDot, animationDelay: '0s' }} />
                 <span style={{ ...styles.loadingDot, animationDelay: '0.16s' }} />
@@ -175,12 +168,12 @@ export default function ClientWrapped() {
         )}
 
         <div style={styles.container}>
-          {/* PANTALLA DE BIENVENIDA */}
+          {/* INTRO */}
           {view === 'intro' && (
             <section style={styles.introHero}>
               <div style={styles.introGradient} />
               <div style={styles.introContent}>
-                <div style={styles.introBadgeRow}>
+                <div style={styles.topRow}>
                   <div style={styles.logoWrap}>
                     <img src="/caamp-logo.png" alt="Caamp" style={styles.logo} />
                     <span style={styles.brandText}>CAAMP</span>
@@ -194,32 +187,28 @@ export default function ClientWrapped() {
                 </h1>
 
                 <p style={styles.introSubtitle}>
-                  Un resumen visual de todo lo que moviste, sumaste y construiste este año en Caamp.
-                </p>
-
-                <p style={styles.introLine}>
-                  Da igual en qué punto empezaste. Lo importante es todo lo que ya avanzaste.
+                  Un resumen visual (premium y limpio) de lo que construiste este año en Caamp.
                 </p>
 
                 <button
-                  style={styles.introButton}
+                  style={styles.primaryButton}
                   onClick={() => {
                     setView('input');
                     setError('');
                   }}
                 >
-                  Ver mi año en Caamp
+                  Ver mi año
                 </button>
 
-                <p style={styles.introHint}>Toca para continuar</p>
+                <p style={styles.smallHint}>Optimizado para celular ✨</p>
               </div>
             </section>
           )}
 
-          {/* HERO / INPUT */}
+          {/* INPUT */}
           {view === 'input' && !data && (
-            <section style={styles.hero}>
-              <div style={styles.heroTopRow}>
+            <section style={styles.card}>
+              <div style={styles.topRow}>
                 <div style={styles.logoWrap}>
                   <img src="/caamp-logo.png" alt="Caamp" style={styles.logo} />
                   <span style={styles.brandText}>CAAMP</span>
@@ -228,12 +217,11 @@ export default function ClientWrapped() {
               </div>
 
               <h1 style={styles.title}>
-                Tu <span style={styles.gradientText}>año en Caamp</span>
+                Tu <span style={styles.gradientText}>año</span> en Caamp
               </h1>
 
               <p style={styles.subtitle}>
-                Descubre cuántas veces entrenaste, qué tan constante fuiste y en qué lugar estás
-                dentro de la comunidad.
+                Ingresa tu número de cliente (ID) para ver tu resumen.
               </p>
 
               <form onSubmit={buscar} style={styles.form}>
@@ -241,9 +229,10 @@ export default function ClientWrapped() {
                   style={styles.input}
                   value={clientId}
                   onChange={e => setClientId(e.target.value)}
-                  placeholder="Ingresa tu número de cliente de la app"
+                  placeholder="Ej: 303"
+                  inputMode="numeric"
                 />
-                <button style={styles.ctaButton} disabled={loading}>
+                <button style={styles.primaryButton} disabled={loading}>
                   {loading ? 'Cargando...' : 'Ver mi Wrapped'}
                 </button>
               </form>
@@ -251,223 +240,151 @@ export default function ClientWrapped() {
               {error && <p style={styles.error}>{error}</p>}
 
               <p style={styles.helper}>
-                Si no conoces tu número de cliente, pregúntanos en front desk o por WhatsApp. 💚
+                Si no sabes tu ID, pídelo en front desk o por WhatsApp 💚
               </p>
             </section>
           )}
 
-          {/* RESULTADOS */}
+          {/* RESULTS */}
           {view === 'results' && data && (
             <section style={styles.results} ref={containerRef}>
-              {/* Cabecera */}
-              <div style={styles.headerCard}>
-                <div style={styles.headerTopRow}>
-                  <div style={styles.logoRow}>
+              {/* HEADER */}
+              <div style={styles.card}>
+                <div style={styles.topRow}>
+                  <div style={styles.logoWrap}>
                     <img src="/caamp-logo.png" alt="Caamp" style={styles.logoSmall} />
-                    <span style={styles.pill}>Client Wrapped · 2025</span>
+                    <span style={styles.brandText}>CAAMP</span>
                   </div>
+                  <span style={styles.pill}>Client Wrapped · 2025</span>
                 </div>
-                <p style={styles.smallLabel}>Hola,</p>
-                <h2 style={styles.clientName}>{data.name}</h2>
-                <p style={styles.clientTitle}>{data.titulo}</p>
 
-                <div style={styles.levelRow}>
-                  <div style={styles.levelCard}>
-                    <p style={styles.levelLabel}>Nivel de movimiento</p>
-                    <p style={styles.levelValue}>{data.nivel}</p>
-                    <p style={styles.levelDetail}>
-                      Entrenaste más que <strong>{data.percentile}%</strong> de Caamp.
-                    </p>
-                  </div>
+                <p style={styles.kicker}>Hola,</p>
+                <h2 style={styles.name}>{data.name}</h2>
+                <p style={styles.desc}>{data.titulo}</p>
+
+                <div style={styles.levelCard}>
+                  <p style={styles.levelLabel}>Nivel</p>
+                  <p style={styles.levelValue}>{data.nivel}</p>
+                  <p style={styles.levelDetail}>
+                    Entrenaste más que <strong>{data.percentile}%</strong> de Caamp.
+                  </p>
                 </div>
               </div>
 
-              {/* ANILLOS LIMPIOS */}
-              <div style={styles.ringsCard}>
-                <p style={styles.ringsTitle}>Tu energía en círculos</p>
-                <p style={styles.ringsSubtitle}>
-                  Así se ve todo lo que hiciste este año, resumido en tres anillos:
+              {/* RINGS */}
+              <div style={styles.card}>
+                <p style={styles.sectionTitle}>Tu energía en círculos</p>
+                <p style={styles.sectionSub}>
+                  Tres anillos, una historia: movimiento, comunidad y constancia.
                 </p>
 
                 <div style={styles.ringsWrapper}>
                   <div style={styles.ringsGraphic}>
-                    {/* Anillo externo – movimiento total */}
                     <div
                       style={{
-                        ...styles.ringBase,
                         ...styles.ringOuter,
-                        backgroundImage: `conic-gradient(#22c55e ${progress}%, rgba(31,41,55,0.5) ${progress}% 100%)`
+                        backgroundImage: `conic-gradient(#16a34a ${progress}%, rgba(15,23,42,0.08) ${progress}% 100%)`
                       }}
                     />
-                    {/* Anillo medio – comunidad */}
                     <div
                       style={{
-                        ...styles.ringBase,
                         ...styles.ringMiddle,
-                        backgroundImage: `conic-gradient(#06b6d4 ${ringCommunity}%, rgba(15,23,42,0.7) ${ringCommunity}% 100%)`
+                        backgroundImage: `conic-gradient(#0284c7 ${ringCommunity}%, rgba(15,23,42,0.08) ${ringCommunity}% 100%)`
                       }}
                     />
-                    {/* Anillo interno – constancia semanal */}
                     <div
                       style={{
-                        ...styles.ringBase,
                         ...styles.ringInner,
-                        backgroundImage: `conic-gradient(#eab308 ${porcentajeConstancia}%, rgba(15,23,42,0.7) ${porcentajeConstancia}% 100%)`
+                        backgroundImage: `conic-gradient(#f59e0b ${porcentajeConstancia}%, rgba(15,23,42,0.08) ${porcentajeConstancia}% 100%)`
                       }}
                     />
-                    <div style={styles.ringsCenterText}>
-                      <span style={styles.ringsCenterNumber}>{data.total_asistencias}</span>
-                      <span style={styles.ringsCenterLabel}>clases</span>
+                    <div style={styles.ringsCenter}>
+                      <span style={styles.centerNumber}>{data.total_asistencias}</span>
+                      <span style={styles.centerLabel}>clases</span>
                     </div>
                   </div>
 
-                  <div style={styles.ringsLegend}>
-                    <div style={styles.ringsLegendItem}>
-                      <span style={{ ...styles.ringsDot, backgroundColor: '#22c55e' }} />
-                      <div>
-                        <p style={styles.ringsLegendLabel}>Movimiento total</p>
-                        <p style={styles.ringsLegendValue}>
-                          {progress}% del máximo de entrenamientos del estudio.
-                        </p>
-                      </div>
-                    </div>
-                    <div style={styles.ringsLegendItem}>
-                      <span style={{ ...styles.ringsDot, backgroundColor: '#06b6d4' }} />
-                      <div>
-                        <p style={styles.ringsLegendLabel}>Tu lugar en la comunidad</p>
-                        <p style={styles.ringsLegendValue}>
-                          Top {data.percentile}% de Caamp este año.
-                        </p>
-                      </div>
-                    </div>
-                    <div style={styles.ringsLegendItem}>
-                      <span style={{ ...styles.ringsDot, backgroundColor: '#eab308' }} />
-                      <div>
-                        <p style={styles.ringsLegendLabel}>Constancia semanal</p>
-                        <p style={styles.ringsLegendValue}>
-                          {porcentajeConstancia}% de un objetivo de 4 clases por semana.
-                        </p>
-                      </div>
-                    </div>
+                  <div style={styles.legend}>
+                    <LegendItem color="#16a34a" title="Movimiento total" value={`${progress}% del máximo`} />
+                    <LegendItem color="#0284c7" title="Comunidad" value={`Top ${data.percentile}%`} />
+                    <LegendItem color="#f59e0b" title="Constancia" value={`${porcentajeConstancia}% del objetivo`} />
                   </div>
                 </div>
               </div>
 
-              {/* TOTAL CARD */}
-              <div style={styles.mainCard}>
-                <p style={styles.cardTag}>Total de entrenamientos</p>
-
-                <div style={styles.mainNumberRow}>
-                  <span style={styles.mainNumber}>{data.total_asistencias}</span>
-                  <span style={styles.mainNumberCaption}>veces que elegiste moverte</span>
+              {/* TOTAL */}
+              <div style={styles.card}>
+                <p style={styles.sectionTitle}>Total del año</p>
+                <div style={styles.bigRow}>
+                  <span style={styles.bigNumber}>{data.total_asistencias}</span>
+                  <span style={styles.bigCaption}>entrenamientos</span>
                 </div>
 
-                <div style={styles.progressBlock}>
-                  <div style={styles.progressTrack}>
-                    <div
-                      style={{
-                        ...styles.progressBar,
-                        width: `${progress}%`
-                      }}
-                    />
-                  </div>
-                  <div style={styles.progressLabels}>
-                    <span style={styles.progressLabel}>Inicio del año</span>
-                    <span style={styles.progressLabelRight}>Máximo de la comunidad</span>
-                  </div>
+                <div style={styles.progressTrack}>
+                  <div style={{ ...styles.progressBar, width: `${progress}%` }} />
                 </div>
 
                 <div style={styles.chipsRow}>
-                  <span style={styles.chipPrimary}>
-                    Top {data.percentile}% de la comunidad
-                  </span>
+                  <span style={styles.chipPrimary}>Top {data.percentile}%</span>
                   <span style={styles.chipOutline}>
-                    Lugar #{data.rank} de {data.total_clients} personas
+                    Lugar #{data.rank} de {data.total_clients}
                   </span>
                 </div>
               </div>
 
               {/* CONSTANCIA */}
-              <div style={styles.secondaryCard}>
-                <p style={styles.cardTag}>Tu constancia</p>
-
+              <div style={styles.card}>
+                <p style={styles.sectionTitle}>Constancia</p>
                 <div style={styles.statsRow}>
-                  <div style={styles.statBlock}>
-                    <p style={styles.statLabel}>Promedio al mes</p>
-                    <p style={styles.statNumber}>{data.promedio_mensual}</p>
-                    <p style={styles.statHint}>clases por mes</p>
-                  </div>
-                  <div style={styles.statBlock}>
-                    <p style={styles.statLabel}>Promedio a la semana</p>
-                    <p style={styles.statNumber}>{data.promedio_semanal}</p>
-                    <p style={styles.statHint}>sesiones por semana</p>
-                  </div>
+                  <Stat label="Promedio al mes" value={data.promedio_mensual} suffix="clases" />
+                  <Stat label="Promedio a la semana" value={data.promedio_semanal} suffix="sesiones" />
                 </div>
-
-                <p style={styles.secondaryText}>
-                  No fue suerte. Fueron todas esas veces que llegaste, entrenaste y saliste distinto
-                  de como entraste.
+                <p style={styles.bodyText}>
+                  No fue suerte. Fue disciplina repetida.
                 </p>
               </div>
 
-              {/* EQUIVALENCIAS */}
-              <div style={styles.equivalenceCard}>
-                <p style={styles.equivalenceTitle}>Si lo ponemos en perspectiva…</p>
-                <p style={styles.equivalenceText}>
-                  Si cada clase fuera una carrera de <strong>5 km</strong>, este año habrías corrido
-                  alrededor de <strong>{kmEstimados.toFixed(0)} km</strong>, que son unos{' '}
-                  <strong>{maratones}</strong> maratones completos. 🏃‍♂️
+              {/* PERSPECTIVA */}
+              <div style={styles.card}>
+                <p style={styles.sectionTitle}>En perspectiva</p>
+                <p style={styles.bodyText}>
+                  Si cada clase fueran <strong>5 km</strong>, este año corriste aprox.{' '}
+                  <strong>{kmEstimados.toFixed(0)} km</strong> (≈ <strong>{maratones}</strong> maratones).
                 </p>
-                <p style={styles.equivalenceText}>
-                  Y si cada clase fueran <strong>500 escalones</strong>, habrías subido el
-                  equivalente a escalar el Everest aproximadamente{' '}
-                  <strong>{everests}</strong> veces. 🏔️
+                <p style={styles.bodyText}>
+                  Y si cada clase fueran <strong>85 m</strong> de subida, escalaste el equivalente al Everest{' '}
+                  <strong>{everests}</strong> veces.
                 </p>
-                <p style={styles.equivalenceNote}>
-                  (Son equivalencias aproximadas, pero te dan una idea de lo grande que fue todo lo
-                  que entrenaste.)
-                </p>
+                <p style={styles.noteText}>(Equivalencias aproximadas.)</p>
               </div>
 
               {/* FOOTER */}
-              <div style={styles.footerCard}>
-                <p style={styles.footerTitle}>Lo que construiste este año</p>
-                <p style={styles.footerText}>
-                  Cada asistencia se convirtió en energía, confianza y disciplina. Nada de esto fue
-                  casualidad.
-                </p>
-
-                <p style={styles.footerHighlight}>
-                  Gracias por ser parte de Caamp. Este año lo cerraste entrenando. El que sigue, lo
-                  volvemos a romper juntos. 💚
+              <div style={styles.card}>
+                <p style={styles.sectionTitle}>Cierre</p>
+                <p style={styles.bodyText}>
+                  Gracias por ser parte de Caamp. Este año lo cerraste entrenando. El que sigue… lo rompemos juntos. 💚
                 </p>
 
                 <div style={styles.actionsRow}>
                   <button
-                    style={styles.shareButton}
+                    style={styles.secondaryButton}
                     onClick={() => {
                       if (typeof window !== 'undefined') {
                         const url = window.location.origin + window.location.pathname;
                         navigator.clipboard
                           .writeText(url)
-                          .then(() =>
-                            alert(
-                              'Link copiado. Pega tu Wrapped en stories o compártelo con quien entrenó contigo 💚'
-                            )
-                          )
+                          .then(() => alert('Link copiado 💚'))
                           .catch(() =>
-                            alert(
-                              'No se pudo copiar automático, copia el link directamente de la barra del navegador.'
-                            )
+                            alert('No se pudo copiar automático. Copia el link de la barra del navegador.')
                           );
                       }
                     }}
                   >
-                    Copiar link del Wrapped
+                    Copiar link
                   </button>
 
                   <button
-                    style={styles.backButton}
+                    style={styles.ghostButton}
                     onClick={() => {
                       setData(null);
                       setError('');
@@ -475,7 +392,7 @@ export default function ClientWrapped() {
                       setView('input');
                     }}
                   >
-                    Ver otro cliente
+                    Ver otro
                   </button>
                 </div>
               </div>
@@ -487,89 +404,147 @@ export default function ClientWrapped() {
   );
 }
 
+function LegendItem({ color, title, value }) {
+  return (
+    <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+      <span style={{ width: 10, height: 10, borderRadius: 999, marginTop: 4, background: color }} />
+      <div>
+        <p style={{ margin: 0, fontSize: 12, color: '#0f172a', fontWeight: 700 }}>{title}</p>
+        <p style={{ margin: 0, fontSize: 11, color: '#64748b' }}>{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function Stat({ label, value, suffix }) {
+  return (
+    <div style={{ flex: 1 }}>
+      <p style={{ margin: 0, fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: 1.2 }}>
+        {label}
+      </p>
+      <p style={{ margin: '6px 0 2px', fontSize: 24, fontWeight: 800, color: '#0f172a' }}>{value}</p>
+      <p style={{ margin: 0, fontSize: 11, color: '#64748b' }}>{suffix}</p>
+    </div>
+  );
+}
+
 const styles = {
   page: {
     minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
-    padding: '20px 10px',
+    padding: '18px 10px',
     position: 'relative',
     overflow: 'hidden'
   },
   container: {
     width: '100%',
-    maxWidth: 960,
-    animation: 'fadeUp 480ms ease-out',
+    maxWidth: 920,
     position: 'relative',
     zIndex: 2,
     display: 'flex',
     flexDirection: 'column',
-    gap: 12
+    gap: 12,
+    animation: 'fadeUp 480ms ease-out'
   },
 
-  // Fondo animado
   animatedBgLayer: {
     position: 'fixed',
     inset: 0,
-    background: 'linear-gradient(130deg,#020617,#020617,#020617)',
+    background: 'linear-gradient(180deg, #fbfbff 0%, #f6fff9 40%, #f7fbff 100%)',
     zIndex: 0
   },
   animatedBgNoise: {
     position: 'fixed',
-    inset: '-40%',
+    inset: '-35%',
     backgroundImage:
-      'radial-gradient(circle at 0% 0%, rgba(34,197,94,0.45) 0, transparent 55%), radial-gradient(circle at 100% 100%, rgba(56,189,248,0.4) 0, transparent 55%), radial-gradient(circle at 0% 100%, rgba(234,179,8,0.32) 0, transparent 55%)',
+      'radial-gradient(circle at 10% 20%, rgba(34,197,94,0.22) 0, transparent 55%), radial-gradient(circle at 90% 10%, rgba(56,189,248,0.22) 0, transparent 55%), radial-gradient(circle at 30% 90%, rgba(234,179,8,0.18) 0, transparent 55%)',
     backgroundSize: '140% 140%',
-    animation: 'gradientMove 28s ease-in-out infinite',
-    opacity: 0.6,
-    filter: 'blur(28px)',
+    animation: 'gradientMove 26s ease-in-out infinite',
+    opacity: 1,
+    filter: 'blur(26px)',
     zIndex: 0,
     pointerEvents: 'none'
   },
 
-  // INTRO HERO
+  card: {
+    background: 'rgba(255,255,255,0.72)',
+    borderRadius: 24,
+    padding: 16,
+    border: '1px solid rgba(15,23,42,0.10)',
+    boxShadow: '0 18px 50px rgba(2,6,23,0.10)',
+    backdropFilter: 'blur(14px)'
+  },
+
   introHero: {
     position: 'relative',
     borderRadius: 28,
     padding: 16,
     overflow: 'hidden',
-    boxShadow: '0 24px 70px rgba(15,23,42,1)',
-    border: '1px solid rgba(148,163,184,0.4)'
+    border: '1px solid rgba(15,23,42,0.10)',
+    boxShadow: '0 18px 60px rgba(2,6,23,0.12)'
   },
   introGradient: {
     position: 'absolute',
     inset: '-20%',
     backgroundImage:
-      'conic-gradient(from 160deg, #22c55e, #06b6d4, #eab308, #ec4899, #22c55e)',
+      'conic-gradient(from 160deg, rgba(34,197,94,0.45), rgba(56,189,248,0.45), rgba(34,197,94,0.45))',
     backgroundSize: '200% 200%',
-    animation: 'gradientMove 22s ease-in-out infinite',
-    opacity: 0.9
+    animation: 'gradientMove 18s ease-in-out infinite',
+    opacity: 0.55
   },
   introContent: {
     position: 'relative',
     borderRadius: 24,
     padding: 16,
-    background:
-      'radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.98) 60%, rgba(15,23,42,1))',
-    color: '#f9fafb'
+    background: 'rgba(255,255,255,0.70)',
+    border: '1px solid rgba(15,23,42,0.08)',
+    backdropFilter: 'blur(14px)'
   },
-  introBadgeRow: {
+
+  topRow: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 10,
     marginBottom: 10
   },
+
+  logoWrap: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8
+  },
+  logo: { height: 30, width: 'auto' },
+  logoSmall: { height: 26, width: 'auto' },
+  brandText: {
+    fontSize: 11,
+    letterSpacing: 4,
+    textTransform: 'uppercase',
+    color: '#64748b'
+  },
+  pill: {
+    padding: '6px 10px',
+    borderRadius: 999,
+    border: '1px solid rgba(15,23,42,0.12)',
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    color: '#334155',
+    background: 'rgba(255,255,255,0.55)',
+    whiteSpace: 'nowrap'
+  },
+
   introTitle: {
     margin: 0,
     marginBottom: 8,
     fontSize: 26,
-    fontWeight: 800
+    fontWeight: 900,
+    color: '#0f172a'
   },
   introGradientText: {
     display: 'block',
-    backgroundImage:
-      'linear-gradient(120deg, #22c55e, #06b6d4, #eab308)',
+    backgroundImage: 'linear-gradient(120deg, #16a34a, #0284c7)',
     WebkitBackgroundClip: 'text',
     color: 'transparent',
     backgroundSize: '220% 220%',
@@ -577,91 +552,27 @@ const styles = {
   },
   introSubtitle: {
     margin: 0,
-    marginBottom: 6,
+    marginBottom: 12,
     fontSize: 14,
     lineHeight: 1.5,
-    color: '#e5e7eb',
+    color: '#334155',
     maxWidth: 520
   },
-  introLine: {
-    margin: 0,
-    marginBottom: 12,
-    fontSize: 13,
-    color: '#e5e7eb'
-  },
-  introButton: {
-    padding: '11px 18px',
-    borderRadius: 999,
-    border: 'none',
-    backgroundImage:
-      'linear-gradient(120deg, #f97316, #eab308, #22c55e)',
-    color: '#0f172a',
-    fontWeight: 700,
-    fontSize: 13,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    cursor: 'pointer',
-    boxShadow: '0 12px 30px rgba(0,0,0,0.6)'
-  },
-  introHint: {
-    margin: 0,
-    marginTop: 8,
+  smallHint: {
+    margin: '10px 0 0',
     fontSize: 11,
-    color: '#cbd5f5'
+    color: '#64748b'
   },
 
-  // HERO (INPUT)
-  hero: {
-    background:
-      'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,1), rgba(15,23,42,0.96))',
-    borderRadius: 24,
-    padding: 16,
-    border: '1px solid rgba(148,163,184,0.32)',
-    boxShadow: '0 24px 70px rgba(15,23,42,0.95)',
-    color: '#e5e7eb'
-  },
-  heroTopRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-    marginBottom: 10
-  },
-  logoWrap: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8
-  },
-  logo: {
-    height: 30,
-    width: 'auto'
-  },
-  brandText: {
-    fontSize: 11,
-    letterSpacing: 4,
-    textTransform: 'uppercase',
-    color: '#9ca3af'
-  },
-  pill: {
-    padding: '5px 10px',
-    borderRadius: 999,
-    border: '1px solid rgba(148,163,184,0.7)',
-    fontSize: 10,
-    textTransform: 'uppercase',
-    letterSpacing: 1.4,
-    color: '#e5e7eb',
-    whiteSpace: 'nowrap'
-  },
   title: {
     margin: 0,
     marginBottom: 6,
     fontSize: 26,
-    fontWeight: 800,
-    color: '#f9fafb'
+    fontWeight: 900,
+    color: '#0f172a'
   },
   gradientText: {
-    backgroundImage:
-      'linear-gradient(120deg, #22c55e, #06b6d4, #eab308)',
+    backgroundImage: 'linear-gradient(120deg, #16a34a, #0284c7)',
     WebkitBackgroundClip: 'text',
     color: 'transparent',
     backgroundSize: '220% 220%',
@@ -672,9 +583,9 @@ const styles = {
     marginBottom: 14,
     fontSize: 14,
     lineHeight: 1.5,
-    color: '#cbd5f5',
-    maxWidth: 520
+    color: '#475569'
   },
+
   form: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -683,441 +594,168 @@ const styles = {
   },
   input: {
     flex: 1,
-    minWidth: 200,
-    padding: 11,
+    minWidth: 160,
+    padding: 12,
     borderRadius: 999,
-    border: '1px solid rgba(148,163,184,0.8)',
-    background: 'rgba(15,23,42,0.95)',
-    color: '#f9fafb',
+    border: '1px solid rgba(15,23,42,0.12)',
+    background: 'rgba(255,255,255,0.85)',
+    color: '#0f172a',
     fontSize: 14,
     outline: 'none'
   },
-  ctaButton: {
-    padding: '11px 18px',
+
+  primaryButton: {
+    padding: '12px 18px',
     borderRadius: 999,
     border: 'none',
-    backgroundImage:
-      'linear-gradient(120deg, #22c55e, #22c55e, #06b6d4)',
-    color: '#020617',
-    fontWeight: 700,
+    backgroundImage: 'linear-gradient(120deg, #16a34a, #0284c7)',
+    color: '#ffffff',
+    fontWeight: 800,
     fontSize: 12,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
     cursor: 'pointer',
+    boxShadow: '0 12px 28px rgba(2,6,23,0.12)',
     whiteSpace: 'nowrap'
   },
-  error: {
-    marginTop: 4,
+  secondaryButton: {
+    padding: '10px 14px',
+    borderRadius: 999,
+    border: '1px solid rgba(2,132,199,0.35)',
+    background: 'rgba(2,132,199,0.10)',
+    color: '#0f172a',
+    fontWeight: 800,
     fontSize: 12,
-    color: '#fca5a5'
+    textTransform: 'uppercase',
+    letterSpacing: 1.1,
+    cursor: 'pointer'
   },
-  helper: {
-    marginTop: 6,
-    fontSize: 11,
-    color: '#9ca3af'
+  ghostButton: {
+    padding: '10px 14px',
+    borderRadius: 999,
+    border: '1px solid rgba(15,23,42,0.14)',
+    background: 'transparent',
+    color: '#0f172a',
+    fontWeight: 800,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1.1,
+    cursor: 'pointer'
   },
 
-  // RESULTADOS
-  results: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10
-  },
-  headerCard: {
-    background:
-      'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,1))',
-    borderRadius: 24,
-    padding: 16,
-    border: '1px solid rgba(148,163,184,0.45)',
-    boxShadow: '0 24px 70px rgba(15,23,42,0.98)'
-  },
-  headerTopRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6
-  },
-  logoRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8
-  },
-  logoSmall: {
-    height: 28,
-    width: 'auto'
-  },
-  smallLabel: {
-    margin: '4px 0 0',
+  error: { marginTop: 6, fontSize: 12, color: '#dc2626' },
+  helper: { marginTop: 8, fontSize: 11, color: '#64748b' },
+
+  results: { display: 'flex', flexDirection: 'column', gap: 12 },
+
+  kicker: {
+    margin: '6px 0 0',
     fontSize: 11,
     textTransform: 'uppercase',
     letterSpacing: 1.3,
-    color: '#9ca3af'
+    color: '#64748b'
   },
-  clientName: {
-    margin: '4px 0 2px',
-    fontSize: 24,
-    fontWeight: 800,
-    color: '#f9fafb'
-  },
-  clientTitle: {
-    margin: 0,
-    fontSize: 13,
-    color: '#e5e7eb',
-    maxWidth: 360
-  },
-  levelRow: {
-    marginTop: 10,
-    display: 'flex',
-    justifyContent: 'flex-start'
-  },
+  name: { margin: '4px 0 2px', fontSize: 26, fontWeight: 900, color: '#0f172a' },
+  desc: { margin: 0, fontSize: 13.5, color: '#334155' },
+
   levelCard: {
+    marginTop: 12,
     borderRadius: 18,
-    padding: 10,
-    background:
-      'radial-gradient(circle at top left, rgba(34,197,94,0.26), rgba(15,23,42,1))',
-    border: '1px solid rgba(34,197,94,0.75)',
-    color: '#f9fafb',
-    animation: 'cardFloat 7s ease-in-out infinite',
-    maxWidth: 260
+    padding: 12,
+    background: 'linear-gradient(135deg, rgba(22,163,74,0.12), rgba(2,132,199,0.10))',
+    border: '1px solid rgba(15,23,42,0.08)',
+    animation: 'cardFloat 7s ease-in-out infinite'
   },
   levelLabel: {
     margin: 0,
     fontSize: 11,
     textTransform: 'uppercase',
-    letterSpacing: 1.4,
-    color: '#bbf7d0'
+    letterSpacing: 1.3,
+    color: '#334155'
   },
-  levelValue: {
-    margin: '4px 0 2px',
-    fontSize: 15,
-    fontWeight: 700
-  },
-  levelDetail: {
-    margin: 0,
-    fontSize: 12,
-    color: '#e5e7eb'
-  },
+  levelValue: { margin: '6px 0 2px', fontSize: 16, fontWeight: 900, color: '#0f172a' },
+  levelDetail: { margin: 0, fontSize: 12, color: '#334155' },
 
-  // ANILLOS
-  ringsCard: {
-    borderRadius: 20,
-    padding: 14,
-    background: 'rgba(15,23,42,0.98)',
-    border: '1px solid rgba(148,163,184,0.5)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10
-  },
-  ringsTitle: {
-    margin: 0,
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#f9fafb'
-  },
-  ringsSubtitle: {
-    margin: 0,
-    fontSize: 12,
-    color: '#e5e7eb'
-  },
-  ringsWrapper: {
-    marginTop: 6,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 12
-  },
-  ringsGraphic: {
-    position: 'relative',
-    width: 150,
-    height: 150,
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  ringBase: {
+  sectionTitle: { margin: 0, fontSize: 13, fontWeight: 900, color: '#0f172a' },
+  sectionSub: { margin: '6px 0 0', fontSize: 12, color: '#475569' },
+
+  ringsWrapper: { marginTop: 12, display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' },
+  ringsGraphic: { position: 'relative', width: 150, height: 150, borderRadius: '50%' },
+
+  ringOuter: { position: 'absolute', inset: 0, borderRadius: '50%', padding: 6, backgroundClip: 'padding-box' },
+  ringMiddle: { position: 'absolute', inset: 16, borderRadius: '50%', padding: 6, backgroundClip: 'padding-box' },
+  ringInner: { position: 'absolute', inset: 32, borderRadius: '50%', padding: 6, backgroundClip: 'padding-box' },
+
+  ringsCenter: {
     position: 'absolute',
+    inset: 48,
     borderRadius: '50%',
-    backgroundColor: 'rgba(15,23,42,1)'
-  },
-  ringOuter: {
-    inset: 0,
-    padding: 6,
-    backgroundClip: 'padding-box'
-  },
-  ringMiddle: {
-    inset: 16,
-    padding: 6,
-    backgroundClip: 'padding-box'
-  },
-  ringInner: {
-    inset: 32,
-    padding: 6,
-    backgroundClip: 'padding-box'
-  },
-  ringsCenterText: {
-    position: 'relative',
-    borderRadius: '50%',
-    background: 'radial-gradient(circle, #020617, #020617 60%, #0b1220 100%)',
-    width: 76,
-    height: 76,
+    background: 'rgba(255,255,255,0.85)',
+    border: '1px solid rgba(15,23,42,0.10)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 0 0 3px rgba(15,23,42,1)'
+    boxShadow: '0 10px 25px rgba(2,6,23,0.10)'
   },
-  ringsCenterNumber: {
-    fontSize: 20,
-    fontWeight: 700
-  },
-  ringsCenterLabel: {
-    fontSize: 11,
-    color: '#9ca3af'
-  },
-  ringsLegend: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6
-  },
-  ringsLegendItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8
-  },
-  ringsDot: {
-    width: 10,
-    height: 10,
-    borderRadius: '50%'
-  },
-  ringsLegendLabel: {
-    margin: 0,
-    fontSize: 12,
-    color: '#e5e7eb'
-  },
-  ringsLegendValue: {
-    margin: 0,
-    fontSize: 11,
-    color: '#9ca3af'
-  },
+  centerNumber: { fontSize: 20, fontWeight: 900, color: '#0f172a' },
+  centerLabel: { fontSize: 11, color: '#64748b' },
 
-  // TOTAL CARD
-  mainCard: {
-    borderRadius: 20,
-    padding: 14,
-    background: 'rgba(15,23,42,0.98)',
-    border: '1px solid rgba(148,163,184,0.55)',
-    boxShadow: '0 18px 40px rgba(15,23,42,0.9)'
-  },
-  cardTag: {
-    margin: 0,
-    marginBottom: 6,
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 1.6,
-    color: '#9ca3af'
-  },
-  mainNumberRow: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'baseline',
-    gap: 8,
-    marginBottom: 8
-  },
-  mainNumber: {
-    fontSize: 32,
-    fontWeight: 800,
-    color: '#f9fafb'
-  },
-  mainNumberCaption: {
-    fontSize: 12,
-    color: '#d1d5db'
-  },
-  progressBlock: {
-    marginBottom: 8
-  },
+  legend: { width: '100%', display: 'flex', flexDirection: 'column', gap: 10 },
+
+  bigRow: { display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 10 },
+  bigNumber: { fontSize: 34, fontWeight: 900, color: '#0f172a' },
+  bigCaption: { fontSize: 12, color: '#475569' },
+
   progressTrack: {
     width: '100%',
-    height: 8,
+    height: 10,
     borderRadius: 999,
-    background: 'rgba(15,23,42,1)',
+    background: 'rgba(15,23,42,0.06)',
     overflow: 'hidden',
-    border: '1px solid rgba(51,65,85,0.85)'
+    border: '1px solid rgba(15,23,42,0.08)',
+    marginTop: 10
   },
   progressBar: {
     height: '100%',
     borderRadius: 999,
-    backgroundImage:
-      'linear-gradient(90deg, #22c55e, #22c55e, #06b6d4)',
+    backgroundImage: 'linear-gradient(90deg, #16a34a, #0284c7)',
     transition: 'width 600ms ease-out'
   },
-  progressLabels: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: 4
-  },
-  progressLabel: {
-    fontSize: 11,
-    color: '#9ca3af'
-  },
-  progressLabelRight: {
-    fontSize: 11,
-    color: '#e5e7eb'
-  },
-  chipsRow: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginTop: 4
-  },
+
+  chipsRow: { display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 },
   chipPrimary: {
-    padding: '5px 9px',
+    padding: '6px 10px',
     borderRadius: 999,
-    background: 'rgba(34,197,94,0.15)',
-    border: '1px solid rgba(34,197,94,0.7)',
+    background: 'rgba(22,163,74,0.12)',
+    border: '1px solid rgba(22,163,74,0.25)',
     fontSize: 11,
-    color: '#bbf7d0'
+    color: '#0f172a',
+    fontWeight: 800
   },
   chipOutline: {
-    padding: '5px 9px',
+    padding: '6px 10px',
     borderRadius: 999,
-    border: '1px solid rgba(148,163,184,0.8)',
+    border: '1px solid rgba(15,23,42,0.12)',
     fontSize: 11,
-    color: '#e5e7eb'
+    color: '#334155',
+    background: 'rgba(255,255,255,0.55)'
   },
 
-  // CONSTANCIA
-  secondaryCard: {
-    borderRadius: 20,
-    padding: 14,
-    background: 'rgba(15,23,42,0.96)',
-    border: '1px solid rgba(148,163,184,0.5)'
-  },
-  statsRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginBottom: 6,
-    marginTop: 2
-  },
-  statBlock: {
-    flex: 1
-  },
-  statLabel: {
-    margin: 0,
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 1.3,
-    color: '#94a3b8'
-  },
-  statNumber: {
-    margin: '3px 0 2px',
-    fontSize: 22,
-    fontWeight: 700,
-    color: '#f9fafb'
-  },
-  statHint: {
-    margin: 0,
-    fontSize: 11,
-    color: '#cbd5f5'
-  },
-  secondaryText: {
-    margin: 0,
-    marginTop: 6,
-    fontSize: 12.5,
-    color: '#e5e7eb'
-  },
+  statsRow: { display: 'flex', gap: 12, marginTop: 12 },
 
-  // EQUIVALENCIAS
-  equivalenceCard: {
-    borderRadius: 20,
-    padding: 14,
-    background: 'rgba(15,23,42,0.98)',
-    border: '1px solid rgba(148,163,184,0.5)'
-  },
-  equivalenceTitle: {
-    margin: 0,
-    marginBottom: 4,
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#f9fafb'
-  },
-  equivalenceText: {
-    margin: 0,
-    marginBottom: 4,
-    fontSize: 12.5,
-    color: '#e5e7eb'
-  },
-  equivalenceNote: {
-    margin: 0,
-    marginTop: 2,
-    fontSize: 11,
-    color: '#9ca3af'
-  },
+  bodyText: { margin: '10px 0 0', fontSize: 12.8, color: '#334155', lineHeight: 1.55 },
+  noteText: { margin: '6px 0 0', fontSize: 11, color: '#64748b' },
 
-  // FOOTER
-  footerCard: {
-    borderRadius: 20,
-    padding: 14,
-    background: 'rgba(15,23,42,0.98)',
-    border: '1px solid rgba(148,163,184,0.5)',
-    marginBottom: 4
-  },
-  footerTitle: {
-    margin: 0,
-    marginBottom: 4,
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#f9fafb'
-  },
-  footerText: {
-    margin: 0,
-    marginBottom: 6,
-    fontSize: 12.5,
-    color: '#e5e7eb'
-  },
-  footerHighlight: {
-    margin: 0,
-    marginBottom: 10,
-    fontSize: 12.5,
-    color: '#bbf7d0'
-  },
-  actionsRow: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 8
-  },
-  shareButton: {
-    padding: '9px 14px',
-    borderRadius: 999,
-    border: '1px solid rgba(34,197,94,0.9)',
-    background: 'rgba(22,163,74,0.16)',
-    color: '#bbf7d0',
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 1.1,
-    cursor: 'pointer'
-  },
-  backButton: {
-    padding: '9px 14px',
-    borderRadius: 999,
-    border: '1px solid rgba(148,163,184,0.9)',
-    background: 'transparent',
-    color: '#e5e7eb',
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 1.1,
-    cursor: 'pointer'
-  },
+  actionsRow: { display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 14 },
 
-  // LOADING OVERLAY
+  // Loading (claro)
   loadingOverlay: {
     position: 'fixed',
     inset: 0,
     zIndex: 50,
-    background: 'rgba(2,6,23,0.94)',
-    backdropFilter: 'blur(16px)',
+    background: 'rgba(248,250,252,0.85)',
+    backdropFilter: 'blur(14px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
@@ -1127,62 +765,40 @@ const styles = {
     padding: 18,
     width: '90%',
     maxWidth: 320,
-    background:
-      'radial-gradient(circle at top, rgba(34,197,94,0.3), rgba(15,23,42,1))',
-    border: '1px solid rgba(34,197,94,0.8)',
+    background: 'rgba(255,255,255,0.75)',
+    border: '1px solid rgba(15,23,42,0.10)',
     textAlign: 'center',
-    boxShadow: '0 26px 60px rgba(0,0,0,0.95)'
+    boxShadow: '0 18px 50px rgba(2,6,23,0.12)',
+    backdropFilter: 'blur(14px)'
   },
-  loadingRingWrap: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 10
-  },
+  loadingRingWrap: { display: 'flex', justifyContent: 'center', marginBottom: 10 },
   loadingRing: {
     width: 70,
     height: 70,
     borderRadius: '50%',
-    border: '3px solid rgba(15,23,42,1)',
-    borderTopColor: '#22c55e',
-    borderRightColor: '#06b6d4',
+    border: '3px solid rgba(15,23,42,0.10)',
+    borderTopColor: '#16a34a',
+    borderRightColor: '#0284c7',
     animation: 'spinRing 1.1s linear infinite',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    background:
-      'radial-gradient(circle, rgba(15,23,42,1), rgba(15,23,42,0.7))'
+    justifyContent: 'center'
   },
   loadingRingInner: {
     width: 34,
     height: 34,
     borderRadius: '50%',
-    backgroundImage:
-      'linear-gradient(135deg, #22c55e, #06b6d4, #eab308)',
-    opacity: 0.92
+    backgroundImage: 'linear-gradient(135deg, #16a34a, #0284c7)',
+    opacity: 0.95
   },
-  loadingTitle: {
-    margin: 0,
-    marginBottom: 4,
-    fontSize: 15,
-    fontWeight: 700,
-    color: '#f9fafb'
-  },
-  loadingText: {
-    margin: 0,
-    marginBottom: 10,
-    fontSize: 12.5,
-    color: '#e5e7eb'
-  },
-  loadingDots: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: 6
-  },
+  loadingTitle: { margin: 0, marginBottom: 4, fontSize: 15, fontWeight: 900, color: '#0f172a' },
+  loadingText: { margin: 0, marginBottom: 10, fontSize: 12.5, color: '#334155' },
+  loadingDots: { display: 'flex', justifyContent: 'center', gap: 6 },
   loadingDot: {
     width: 6,
     height: 6,
     borderRadius: '50%',
-    background: '#bbf7d0',
+    background: '#0f172a',
     animation: 'dotPulse 1.1s ease-in-out infinite'
   }
 };
