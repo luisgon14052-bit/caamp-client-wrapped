@@ -1,15 +1,7 @@
 import { useState, useRef } from 'react';
 
-function normalizeName(str) {
-  return (str || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .trim();
-}
-
 export default function ClientWrapped() {
-  const [name, setName] = useState('');
+  const [clientId, setClientId] = useState('');
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,8 +15,12 @@ export default function ClientWrapped() {
     setLoading(true);
 
     try {
-      const clean = normalizeName(name);
-      const res = await fetch('/api/client?name=' + encodeURIComponent(clean));
+      const cleanId = clientId.trim();
+      if (!cleanId) {
+        throw new Error('ID vacío');
+      }
+
+      const res = await fetch('/api/client?id=' + encodeURIComponent(cleanId));
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Error');
       setData(json);
@@ -36,7 +32,9 @@ export default function ClientWrapped() {
         }
       }, 120);
     } catch (err) {
-      setError('No encontramos tu Wrapped. Revisa tu nombre o pregunta en front desk 💚');
+      setError(
+        'No encontramos tu Wrapped. Revisa tu número de cliente o pregunta en front desk 💚'
+      );
       setData(null);
     } finally {
       setLoading(false);
@@ -241,9 +239,9 @@ export default function ClientWrapped() {
               <form onSubmit={buscar} style={styles.form}>
                 <input
                   style={styles.input}
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  placeholder="Escribe tu nombre como aparece en la app"
+                  value={clientId}
+                  onChange={e => setClientId(e.target.value)}
+                  placeholder="Ingresa tu número de cliente de la app"
                 />
                 <button style={styles.ctaButton} disabled={loading}>
                   {loading ? 'Cargando...' : 'Ver mi Wrapped'}
@@ -253,8 +251,7 @@ export default function ClientWrapped() {
               {error && <p style={styles.error}>{error}</p>}
 
               <p style={styles.helper}>
-                Demo: prueba con <strong>Ana López</strong>, <strong>Carlos Rivera</strong>,{' '}
-                <strong>Carla Mendoza</strong>, <strong>Mariana Ríos</strong>.
+                Si no conoces tu número de cliente, pregúntanos en front desk o por WhatsApp. 💚
               </p>
             </section>
           )}
@@ -270,7 +267,7 @@ export default function ClientWrapped() {
                     <span style={styles.pill}>Client Wrapped · 2025</span>
                   </div>
                 </div>
-                <p style={styles.smallLabel}>Este año fuiste…</p>
+                <p style={styles.smallLabel}>Hola,</p>
                 <h2 style={styles.clientName}>{data.name}</h2>
                 <p style={styles.clientTitle}>{data.titulo}</p>
 
@@ -356,7 +353,7 @@ export default function ClientWrapped() {
                 </div>
               </div>
 
-              {/* TOTAL + CONSTANCIA (STACKED PARA CEL) */}
+              {/* TOTAL CARD */}
               <div style={styles.mainCard}>
                 <p style={styles.cardTag}>Total de entrenamientos</p>
 
@@ -390,6 +387,7 @@ export default function ClientWrapped() {
                 </div>
               </div>
 
+              {/* CONSTANCIA */}
               <div style={styles.secondaryCard}>
                 <p style={styles.cardTag}>Tu constancia</p>
 
@@ -412,7 +410,7 @@ export default function ClientWrapped() {
                 </p>
               </div>
 
-              {/* Equivalencias tipo maratón / Everest */}
+              {/* EQUIVALENCIAS */}
               <div style={styles.equivalenceCard}>
                 <p style={styles.equivalenceTitle}>Si lo ponemos en perspectiva…</p>
                 <p style={styles.equivalenceText}>
@@ -431,7 +429,7 @@ export default function ClientWrapped() {
                 </p>
               </div>
 
-              {/* Mensaje final */}
+              {/* FOOTER */}
               <div style={styles.footerCard}>
                 <p style={styles.footerTitle}>Lo que construiste este año</p>
                 <p style={styles.footerText}>
@@ -473,7 +471,7 @@ export default function ClientWrapped() {
                     onClick={() => {
                       setData(null);
                       setError('');
-                      setName('');
+                      setClientId('');
                       setView('input');
                     }}
                   >
